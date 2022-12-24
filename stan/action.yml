@@ -1,0 +1,7 @@
+name: 'Stan'
+description: 'Run Stan on a Haskell project'
+author: 'Michael B. Gale'
+inputs: []
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
