@@ -41,36 +41,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const tc = __importStar(__nccwpck_require__(7784));
+const exec = __importStar(__nccwpck_require__(1514));
+const path = __importStar(__nccwpck_require__(1017));
+const os = __importStar(__nccwpck_require__(2037));
+const TOOL_NAME = 'Stan';
+const TOOL_VERSION = '0.0.1.0';
 function getExistingStanPath() {
     return __awaiter(this, void 0, void 0, function* () {
-        return tc.find('Stan', '0.0.1.0');
+        return tc.find(TOOL_NAME, TOOL_VERSION);
     });
 }
 function downloadStan() {
     return __awaiter(this, void 0, void 0, function* () {
-        const binaryPath = yield tc.downloadTool('https://github.com/mbg/stan/releases/download/test/stan-Linux');
-        core.info(`Stan downloaded to ${binaryPath}`);
-        // const cachedDir = await tc.cacheDir(path.dirname(binaryPath), "Stan", '0.0.1.0');
-        return binaryPath;
+        const archivePath = yield tc.downloadTool('https://github.com/mbg/stan/releases/download/test/stan-Linux.tar.gz');
+        core.info(`Stan downloaded to ${archivePath}`);
+        const extractedFolder = yield tc.extractTar(archivePath, os.homedir());
+        const releaseFolder = path.join(extractedFolder, "stan-0.0.1");
+        core.info(`Release folder is ${releaseFolder}`);
+        const cachedPath = yield tc.cacheDir(releaseFolder, TOOL_NAME, TOOL_VERSION);
+        core.info(`Stan cached to ${cachedPath}`);
+        return cachedPath;
     });
 }
 function findOrDownloadStan() {
     return __awaiter(this, void 0, void 0, function* () {
         const existingPath = yield getExistingStanPath();
         if (existingPath) {
-            core.debug(`Found Stan at ${existingPath}`);
+            core.info(`Found Stan at ${existingPath}`);
             return existingPath;
         }
         else {
-            core.debug('Stan not cached, downloading...');
+            core.info('Stan not cached, downloading...');
             return core.group('Downloading Stan', () => __awaiter(this, void 0, void 0, function* () { return yield downloadStan(); }));
         }
+    });
+}
+function runStan(binary) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const stanArgs = [];
+        core.info(`Running ${binary} ${stanArgs.join(' ')}`);
+        const statusCode = exec.exec(binary, stanArgs);
+        return statusCode;
     });
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const stanPath = yield findOrDownloadStan();
+            yield runStan(path.join(stanPath, "stan"));
         }
         catch (error) {
             core.setFailed(error instanceof Error ? error : String(error));
