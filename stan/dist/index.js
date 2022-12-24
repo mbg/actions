@@ -56,7 +56,7 @@ function downloadStan() {
         const archivePath = yield tc.downloadTool('https://github.com/mbg/stan/releases/download/test/stan-Linux.tar.gz');
         core.info(`Stan downloaded to ${archivePath}`);
         const extractedFolder = yield tc.extractTar(archivePath, os.homedir());
-        const releaseFolder = path.join(extractedFolder, "stan-0.0.1");
+        const releaseFolder = path.join(extractedFolder, 'stan-0.0.1');
         core.info(`Release folder is ${releaseFolder}`);
         const cachedPath = yield tc.cacheDir(releaseFolder, TOOL_NAME, TOOL_VERSION);
         core.info(`Stan cached to ${cachedPath}`);
@@ -76,10 +76,10 @@ function findOrDownloadStan() {
         }
     });
 }
-const INPUT_KEY_STAN_WORKING_DIRECTORY = "working-directory";
+const INPUT_KEY_STAN_WORKING_DIRECTORY = 'working-directory';
 function runStan(binary) {
     return __awaiter(this, void 0, void 0, function* () {
-        const inputWD = core.getInput(INPUT_KEY_STAN_WORKING_DIRECTORY, { required: false }) || ".";
+        const inputWD = core.getInput(INPUT_KEY_STAN_WORKING_DIRECTORY, { required: false }) || '.';
         const stanArgs = [];
         core.info(`Running ${binary} ${stanArgs.join(' ')}`);
         const statusCode = exec.exec(binary, stanArgs, {
@@ -92,7 +92,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const stanPath = yield findOrDownloadStan();
-            yield runStan(path.join(stanPath, "stan"));
+            yield runStan(path.join(stanPath, 'stan'));
         }
         catch (error) {
             core.setFailed(error instanceof Error ? error : String(error));
