@@ -25,6 +25,23 @@ jobs:
           repository: "kowainik/stan"
           path: "stan-test"
 
+      - uses: haskell/actions/setup@v2.0.1
+        name: Setup Haskell Stack
+        with:
+          ghc-version: "8.10.3"
+          stack-version: latest
+
+      - uses: actions/cache@v3.0.11
+        name: Cache ~/.stack
+        with:
+          path: ~/.stack
+          key: ${{ runner.os }}-stan-8.10.3-stack
+
+      - name: Build
+        working-directory: ./stan-test
+        run: |
+          stack build --system-ghc
+
       - name: Run Stan
         uses: ./stan/
         with:
