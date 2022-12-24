@@ -76,11 +76,15 @@ function findOrDownloadStan() {
         }
     });
 }
+const INPUT_KEY_STAN_WORKING_DIRECTORY = "working-directory";
 function runStan(binary) {
     return __awaiter(this, void 0, void 0, function* () {
+        const inputWD = core.getInput(INPUT_KEY_STAN_WORKING_DIRECTORY, { required: false }) || ".";
         const stanArgs = [];
         core.info(`Running ${binary} ${stanArgs.join(' ')}`);
-        const statusCode = exec.exec(binary, stanArgs);
+        const statusCode = exec.exec(binary, stanArgs, {
+            cwd: inputWD
+        });
         return statusCode;
     });
 }

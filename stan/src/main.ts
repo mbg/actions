@@ -33,10 +33,15 @@ async function findOrDownloadStan(): Promise<string> {
   }
 }
 
+const INPUT_KEY_STAN_WORKING_DIRECTORY = "working-directory";
+
 async function runStan(binary: string): Promise<number> {
+  const inputWD = core.getInput(INPUT_KEY_STAN_WORKING_DIRECTORY, {required: false}) || ".";
   const stanArgs: string[] = [];
   core.info(`Running ${binary} ${stanArgs.join(' ')}`);
-  const statusCode = exec.exec(binary, stanArgs);
+  const statusCode = exec.exec(binary, stanArgs, {
+    cwd: inputWD
+  });
   return statusCode;
 }
 

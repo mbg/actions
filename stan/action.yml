@@ -1,7 +1,11 @@
 name: 'Stan'
 description: 'Run Stan on a Haskell project'
 author: 'Michael B. Gale'
-inputs: {}
+inputs:
+  working-directory:
+    description: "Working directory for Stan"
+    required: false
+    default: "."
 runs:
   using: 'node16'
   main: 'dist/index.js'

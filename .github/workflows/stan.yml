@@ -19,5 +19,13 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
+      - name: "Checkout some Haskell code for testing"
+        uses: actions/checkout@v3
+        with:
+          repository: "kowainik/stan"
+          path: "stan-test"
+
       - name: Run Stan
         uses: ./stan/
+        with:
+          working-directory: "./stan-test/"
