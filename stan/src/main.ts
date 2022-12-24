@@ -4,6 +4,9 @@ import * as exec from '@actions/exec';
 import * as path from 'path';
 import * as os from 'os';
 
+// TODO: replace with kowainik one
+const TOOL_REPO = 'https://github.com/mbg/stan/releases/download';
+const TOOL_TAG = 'test';
 const TOOL_NAME = 'Stan';
 const TOOL_VERSION = '0.0.1.0';
 
@@ -13,7 +16,7 @@ async function getExistingStanPath(): Promise<string> {
 
 async function downloadStan(): Promise<string> {
   const archivePath = await tc.downloadTool(
-    'https://github.com/mbg/stan/releases/download/test/stan-Linux.tar.gz'
+    `${TOOL_REPO}/${TOOL_TAG}/stan-Linux.tar.gz`
   );
   core.info(`Stan downloaded to ${archivePath}`);
   const extractedFolder = await tc.extractTar(archivePath, os.homedir());

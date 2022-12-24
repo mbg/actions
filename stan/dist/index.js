@@ -44,6 +44,9 @@ const tc = __importStar(__nccwpck_require__(7784));
 const exec = __importStar(__nccwpck_require__(1514));
 const path = __importStar(__nccwpck_require__(1017));
 const os = __importStar(__nccwpck_require__(2037));
+// TODO: replace with kowainik one
+const TOOL_REPO = 'https://github.com/mbg/stan/releases/download';
+const TOOL_TAG = 'test';
 const TOOL_NAME = 'Stan';
 const TOOL_VERSION = '0.0.1.0';
 function getExistingStanPath() {
@@ -53,7 +56,7 @@ function getExistingStanPath() {
 }
 function downloadStan() {
     return __awaiter(this, void 0, void 0, function* () {
-        const archivePath = yield tc.downloadTool('https://github.com/mbg/stan/releases/download/test/stan-Linux.tar.gz');
+        const archivePath = yield tc.downloadTool(`${TOOL_REPO}/${TOOL_TAG}/stan-Linux.tar.gz`);
         core.info(`Stan downloaded to ${archivePath}`);
         const extractedFolder = yield tc.extractTar(archivePath, os.homedir());
         const releaseFolder = path.join(extractedFolder, 'stan-0.0.1');
