@@ -1,11 +1,19 @@
-name: 'Stan'
-description: 'Run Stan on a Haskell project'
-author: 'Michael B. Gale'
+name: "Stan"
+description: "Run Stan on a Haskell project"
+author: "Michael B. Gale"
 inputs:
   working-directory:
     description: "Working directory for Stan"
     required: false
     default: "."
+  sarif:
+    description: "Generate a .sarif file"
+    required: false
+    default: true
+  output-directory:
+    description: "Path of a directory in which outputs should be stored"
+    required: false
+    default: "."
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"

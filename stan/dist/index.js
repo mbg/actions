@@ -44,11 +44,12 @@ const tc = __importStar(__nccwpck_require__(7784));
 const exec = __importStar(__nccwpck_require__(1514));
 const path = __importStar(__nccwpck_require__(1017));
 const os = __importStar(__nccwpck_require__(2037));
+const fs = __importStar(__nccwpck_require__(7147));
 // TODO: replace with kowainik one
-const TOOL_REPO = 'https://github.com/mbg/stan/releases/download';
-const TOOL_TAG = 'test';
-const TOOL_NAME = 'Stan';
-const TOOL_VERSION = '0.0.1.0';
+const TOOL_REPO = "https://github.com/mbg/stan/releases/download";
+const TOOL_TAG = "test";
+const TOOL_NAME = "Stan";
+const TOOL_VERSION = "0.0.1.0";
 function getExistingStanPath() {
     return __awaiter(this, void 0, void 0, function* () {
         return tc.find(TOOL_NAME, TOOL_VERSION);
@@ -59,7 +60,7 @@ function downloadStan() {
         const archivePath = yield tc.downloadTool(`${TOOL_REPO}/${TOOL_TAG}/stan-Linux.tar.gz`);
         core.info(`Stan downloaded to ${archivePath}`);
         const extractedFolder = yield tc.extractTar(archivePath, os.homedir());
-        const releaseFolder = path.join(extractedFolder, 'stan-0.0.1');
+        const releaseFolder = path.join(extractedFolder, "stan-0.0.1");
         core.info(`Release folder is ${releaseFolder}`);
         const cachedPath = yield tc.cacheDir(releaseFolder, TOOL_NAME, TOOL_VERSION);
         core.info(`Stan cached to ${cachedPath}`);
@@ -74,28 +75,40 @@ function findOrDownloadStan() {
             return existingPath;
         }
         else {
-            core.info('Stan not cached, downloading...');
-            return core.group('Downloading Stan', () => __awaiter(this, void 0, void 0, function* () { return yield downloadStan(); }));
+            core.info("Stan not cached, downloading...");
+            return core.group("Downloading Stan", () => __awaiter(this, void 0, void 0, function* () { return yield downloadStan(); }));
         }
     });
 }
-const INPUT_KEY_STAN_WORKING_DIRECTORY = 'working-directory';
+const INPUT_KEY_STAN_WORKING_DIRECTORY = "working-directory";
+const INPUT_KEY_STAN_OUTPUT_DIRECTORY = "output-directory";
+const INPUT_KEY_STAN_SARIF = "sarif";
 function runStan(binary) {
     return __awaiter(this, void 0, void 0, function* () {
-        const inputWD = core.getInput(INPUT_KEY_STAN_WORKING_DIRECTORY, { required: false }) || '.';
-        const stanArgs = [];
-        core.info(`Running ${binary} ${stanArgs.join(' ')}`);
-        const statusCode = exec.exec(binary, stanArgs, {
-            cwd: inputWD
+        const buffers = [];
+        const inputWD = core.getInput(INPUT_KEY_STAN_WORKING_DIRECTORY, { required: false }) || ".";
+        const sarif = core.getBooleanInput(INPUT_KEY_STAN_SARIF, { required: false });
+        const stanArgs = [sarif ? "--sarif" : "--json"];
+        core.info(`Running ${binary} ${stanArgs.join(" ")}`);
+        const exitCode = yield exec.exec(binary, stanArgs, {
+            cwd: inputWD,
+            listeners: {
+                stdout: chunk => buffers.push(chunk)
+            }
         });
-        return statusCode;
+        const stdout = Buffer.concat(buffers).toString("utf8");
+        return { exitCode, stdout };
     });
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const stanPath = yield findOrDownloadStan();
-            yield runStan(path.join(stanPath, 'stan'));
+            const { exitCode, stdout } = yield runStan(path.join(stanPath, "stan"));
+            const outputDir = core.getInput(INPUT_KEY_STAN_OUTPUT_DIRECTORY, { required: false }) || ".";
+            fs.writeFile(path.join(outputDir, "stan.sarif"), stdout, err => {
+                throw err;
+            });
         }
         catch (error) {
             core.setFailed(error instanceof Error ? error : String(error));
