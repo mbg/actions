@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
     assignees:
       - "mbg"
     labels:
@@ -13,7 +13,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/stan"
     schedule:
-      interval: "daily"
+      interval: "monthly"
     assignees:
       - "mbg"
     allow:
