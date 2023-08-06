@@ -1,0 +1,44 @@
+name: "Stack: Build"
+description: "Build with a Stack resolver"
+author: "Michael B. Gale"
+inputs:
+  resolver:
+    required: false
+    description: "The basename of the Stack configuration file to use"
+    default: "stack"
+runs:
+  using: "composite"
+  steps:
+    - name: "Install Stack"
+      uses: haskell/actions/setup@v2
+      id: install-haskell
+      with:
+        stack-no-global: true
+        enable-stack: true
+        stack-version: "latest"
+
+    - name: Cache .stack folder
+      id: cache-stack
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.install-haskell.outputs.stack-root }}
+        key: ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}.yaml', inputs.resolver)) }}-${{ hashFiles('*.cabal') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}.yaml', inputs.resolver)) }}-
+          ${{ runner.os }}-${{ inputs.resolver }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal build --test --haddock --only-dependencies --fast
+
+    - name: Build
+      shell: bash
+      run: |
+        stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal build --fast \
+          --test --no-run-tests \
+          --haddock --haddock-arguments='-odocs'
+
+    - name: Test
+      shell: bash
+      run: stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal test --fast
