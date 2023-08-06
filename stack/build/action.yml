@@ -6,6 +6,10 @@ inputs:
     required: false
     description: "The basename of the Stack configuration file to use"
     default: "stack"
+  upload-docs:
+    required: false
+    description: "Whether to upload the generated documentation files as a build artifact."
+    default: false
 runs:
   using: "composite"
   steps:
@@ -38,6 +42,13 @@ runs:
         stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal build --fast \
           --test --no-run-tests \
           --haddock --haddock-arguments='-odocs'
+
+    - name: Upload documentation
+      if: inputs.upload-docs
+      uses: actions/upload-artifact@v3
+      with:
+        name: docs-${{ inputs.resolver }}
+        path: docs/
 
     - name: Test
       shell: bash
