@@ -1,0 +1,30 @@
+name: "Stack: Nightly Build"
+description: "Build with the nightly Stack resolver"
+author: "Michael B. Gale"
+runs:
+  using: "composite"
+  steps:
+    - name: "Install Stack"
+      uses: haskell/actions/setup@v2
+      id: install-haskell
+      with:
+        stack-no-global: true
+        enable-stack: true
+        stack-version: "latest"
+
+    - name: Initialise stack.yaml with the nightly snapshot
+      run: |
+        rm -f stack.yaml && stack init --resolver nightly
+
+    - name: Cache .stack folder
+      id: cache-stack
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.install-haskell.outputs.stack-root }}
+        key: ${{ runner.os }}-${{ hashFiles('stack.yaml') }}-${{ hashFiles('*.cabal') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ hashFiles('stack.yaml') }}-
+
+    - name: Build and test with the nightly snapshot
+      run: |
+        stack build --resolver nightly --haddock --test --bench --no-run-benchmarks
