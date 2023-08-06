@@ -13,6 +13,7 @@ runs:
         stack-version: "latest"
 
     - name: Initialise stack.yaml with the nightly snapshot
+      shell: bash
       run: |
         rm -f stack.yaml && stack init --resolver nightly
 
@@ -26,5 +27,6 @@ runs:
           ${{ runner.os }}-${{ hashFiles('stack.yaml') }}-
 
     - name: Build and test with the nightly snapshot
+      shell: bash
       run: |
         stack build --resolver nightly --haddock --test --bench --no-run-benchmarks
