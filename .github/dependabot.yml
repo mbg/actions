@@ -1,0 +1,32 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "mbg"
+    labels:
+      - "gha"
+      - "dependencies"
+    rebase-strategy: "disabled"
+  - package-ecosystem: "github-actions"
+    directory: "/stack/build"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "mbg"
+    labels:
+      - "gha"
+      - "dependencies"
+    rebase-strategy: "disabled"
+  - package-ecosystem: "github-actions"
+    directory: "/stack/nightly"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "mbg"
+    labels:
+      - "gha"
+      - "dependencies"
+    rebase-strategy: "disabled"
