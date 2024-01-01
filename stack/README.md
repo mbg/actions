@@ -2,7 +2,7 @@
 
 These Actions simplify the use of `stack` for Haskell projects. Some general features:
 
-- Stack is installed using the `haskell/actions/setup` Action.
+- Stack is installed using the `haskell-actions/setup` Action.
 - Dependencies will be cached between builds.
 
 ## build
