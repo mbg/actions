@@ -23,7 +23,7 @@ runs:
 
     - name: Cache .stack folder
       id: cache-stack
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.install-haskell.outputs.stack-root }}
         key: ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}.yaml', inputs.resolver)) }}-${{ hashFiles('*.cabal') }}
