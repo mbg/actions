@@ -10,6 +10,14 @@ inputs:
     required: false
     description: "The version of Stack to use (default: latest)"
     default: "latest"
+  create-issue:
+    required: false
+    description: "Whether to create an issue if the workflow fails (default: false)"
+    default: "false"
+  issue-events:
+    required: false
+    description: ""
+    default: "['schedule']"
 runs:
   using: "composite"
   steps:
@@ -41,3 +49,26 @@ runs:
       working-directory: ${{ inputs.project-directory }}
       run: |
         stack build --resolver nightly --haddock --test --bench --no-run-benchmarks
+
+    - name: "Create issue"
+      shell: bash
+      if: |
+        failure() &&
+        contains(fromJSON(inputs.issue-events), github.event_name) &&
+        inputs.create-issue != 'false'
+      run: |
+        previous_issue_number=$(gh issue list \
+            --label "stackage-nightly-failure" \
+            --json number \
+            --jq '.[0].number')
+          if [[ -n $previous_issue_number ]]; then
+            # don't create a new issue if there's already one
+            exit 0
+          fi
+
+        gh issue create \
+          --label "stackage-nightly-failure" \
+          --title "Stackage Nightly build failed" \
+          --body "The workflow at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} failed"
+      env:
+        GH_TOKEN: ${{ github.token }}
