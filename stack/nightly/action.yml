@@ -1,6 +1,11 @@
 name: "Stack: Nightly Build"
 description: "Build with the nightly Stack resolver"
 author: "Michael B. Gale"
+inputs:
+  stack-version:
+    required: false
+    description: "The version of Stack to use (default: latest)"
+    default: "latest"
 runs:
   using: "composite"
   steps:
@@ -10,7 +15,7 @@ runs:
       with:
         stack-no-global: true
         enable-stack: true
-        stack-version: "latest"
+        stack-version: ${{ inputs.stack-version }}
 
     - name: Initialise stack.yaml with the nightly snapshot
       shell: bash

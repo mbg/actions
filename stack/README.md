@@ -73,4 +73,6 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: mbg/actions/stack/nightly@v0.1
+        with:
+          stack-version: "latest" # optional
 ```
