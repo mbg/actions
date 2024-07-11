@@ -1,0 +1,28 @@
+name: "stack/build"
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-build.yml
+      - stack/build/**
+  pull_request:
+    paths:
+      - .github/workflows/test-build.yml
+      - stack/build/**
+  workflow_dispatch:
+
+jobs:
+  test-build:
+    name: "Test workflow"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: "Run stack/build workflow"
+        uses: ./stack/build/
+        with:
+          project-directory: "./tests/stack"
+          upload-docs: "true"
