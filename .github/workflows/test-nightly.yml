@@ -26,3 +26,5 @@ jobs:
         with:
           project-directory: "./tests/stack"
           stack-version: "latest"
+          create-issue: "true"
+          issue-events: "['pull_request', 'push', 'schedule']"
