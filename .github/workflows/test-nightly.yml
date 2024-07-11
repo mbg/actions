@@ -21,6 +21,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: "Run stack/nightly workflow"
-        uses: ./stack/nightly/action.yml
+        uses: ./stack/nightly/
         with:
           stack-version: "latest"
