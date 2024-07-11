@@ -2,6 +2,10 @@ name: "Stack: Nightly Build"
 description: "Build with the nightly Stack resolver"
 author: "Michael B. Gale"
 inputs:
+  project-directory:
+    required: false
+    description: "The path to the root directory of the project (default: github.workspace)"
+    default: ${{ github.workspace }}
   stack-version:
     required: false
     description: "The version of Stack to use (default: latest)"
@@ -19,6 +23,7 @@ runs:
 
     - name: Initialise stack.yaml with the nightly snapshot
       shell: bash
+      working-directory: ${{ inputs.project-directory }}
       run: |
         rm -f stack.yaml && stack init --resolver nightly
 
@@ -27,11 +32,12 @@ runs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.install-haskell.outputs.stack-root }}
-        key: stack-nightly-${{ runner.os }}-${{ hashFiles('stack.yaml') }}-${{ hashFiles('*.cabal') }}
+        key: stack-nightly-${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml', inputs.project-directory)) }}-${{ hashFiles(format('{0}/*.cabal', inputs.project-directory)) }}
         restore-keys: |
-          stack-nightly-${{ runner.os }}-${{ hashFiles('stack.yaml') }}-
+          stack-nightly-${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml', inputs.project-directory)) }}-
 
     - name: Build and test with the nightly snapshot
       shell: bash
+      working-directory: ${{ inputs.project-directory }}
       run: |
         stack build --resolver nightly --haddock --test --bench --no-run-benchmarks

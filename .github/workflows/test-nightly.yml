@@ -23,4 +23,5 @@ jobs:
       - name: "Run stack/nightly workflow"
         uses: ./stack/nightly/
         with:
+          project-directory: "./tests/stack"
           stack-version: "latest"
