@@ -14,6 +14,7 @@ name: "stack/nightly"
 
 jobs:
   test-nightly:
+    name: "Test workflow"
     runs-on: "ubuntu-latest"
 
     steps:
