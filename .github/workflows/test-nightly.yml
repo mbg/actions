@@ -1,0 +1,26 @@
+name: "stack/nightly"
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-nightly.yml
+      - stack/nightly/**
+  pull_request:
+    paths:
+      - .github/workflows/test-nightly.yml
+      - stack/nightly/**
+  workflow_dispatch:
+
+jobs:
+  test-nightly:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: "Run stack/nightly workflow"
+        uses: ./stack/nightly/action.yml
+        with:
+          stack-version: "latest"
