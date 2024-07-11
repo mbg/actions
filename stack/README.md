@@ -74,5 +74,7 @@ jobs:
 
       - uses: mbg/actions/stack/nightly@v0.1
         with:
+          # The path to the directory that contains the `stack.yaml` file
+          project-directory: "." # optional
           stack-version: "latest" # optional
 ```

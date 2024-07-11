@@ -2,6 +2,10 @@ name: "Stack: Build"
 description: "Build with a Stack resolver"
 author: "Michael B. Gale"
 inputs:
+  project-directory:
+    required: false
+    description: "The path to the root directory of the project (default: github.workspace)"
+    default: ${{ github.workspace }}
   resolver:
     required: false
     description: "The basename of the Stack configuration file to use"
@@ -26,18 +30,20 @@ runs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.install-haskell.outputs.stack-root }}
-        key: ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}.yaml', inputs.resolver)) }}-${{ hashFiles('*.cabal') }}
+        key: ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}/{1}.yaml', inputs.project-directory, inputs.resolver)) }}-${{ hashFiles(format('{0}/*.cabal', inputs.project-directory)) }}
         restore-keys: |
-          ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}.yaml', inputs.resolver)) }}-
+          ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}/{1}.yaml', inputs.project-directory, inputs.resolver)) }}-
           ${{ runner.os }}-${{ inputs.resolver }}-
 
     - name: Install dependencies
       shell: bash
+      working-directory: ${{ inputs.project-directory }}
       run: |
         stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal build --test --haddock --only-dependencies --fast
 
     - name: Build
       shell: bash
+      working-directory: ${{ inputs.project-directory }}
       run: |
         stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal build --fast \
           --test --no-run-tests \
@@ -48,8 +54,9 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: docs-${{ inputs.resolver }}
-        path: docs/
+        path: ${{ inputs.project-directory }}/docs/
 
     - name: Test
       shell: bash
+      working-directory: ${{ inputs.project-directory }}
       run: stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal test --fast
