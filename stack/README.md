@@ -42,10 +42,14 @@ jobs:
 
       - uses: mbg/actions/stack/build@v0.1
         with:
-          # the basename of the Stack configuration file
+          # The version of Stack to use (optional, default: latest)
+          stack-version: "latest"
+          # The basename of the Stack configuration file
           # e.g. specify "stack" to get "stack.yaml"
+          # (optional, default: stack)
           resolver: ${{ matrix.resolver }}
           # Whether to upload Haddock documentation as a build artifact
+          # (optional, default: false)
           upload-docs: true
 ```
 

@@ -6,6 +6,10 @@ inputs:
     required: false
     description: "The path to the root directory of the project (default: github.workspace)"
     default: ${{ github.workspace }}
+  stack-version:
+    required: false
+    description: "The version of Stack to use (default: latest)"
+    default: "latest"
   resolver:
     required: false
     description: "The basename of the Stack configuration file to use"
@@ -23,7 +27,7 @@ runs:
       with:
         stack-no-global: true
         enable-stack: true
-        stack-version: "latest"
+        stack-version: ${{ inputs.stack-version }}
 
     - name: Cache .stack folder
       id: cache-stack
