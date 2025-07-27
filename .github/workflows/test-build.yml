@@ -26,3 +26,12 @@ jobs:
         with:
           project-directory: "./tests/stack"
           upload-docs: "true"
+          install-dir: "./bin"
+
+      - name: "Check that binary exists"
+        shell: bash
+        working-directory: "./tests/stack"
+        run: |
+          if [ ! -f "./bin/stack-action-tests-exe" ]; then
+            exit 1
+          fi
