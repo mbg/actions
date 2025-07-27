@@ -17,7 +17,7 @@ inputs:
   upload-docs:
     required: false
     description: "Whether to upload the generated documentation files as a build artifact."
-    default: false
+    default: "false"
 runs:
   using: "composite"
   steps:
@@ -54,7 +54,7 @@ runs:
           --haddock --haddock-arguments='-odocs'
 
     - name: Upload documentation
-      if: inputs.upload-docs
+      if: inputs.upload-docs == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: docs-${{ inputs.resolver }}
