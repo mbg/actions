@@ -18,6 +18,9 @@ inputs:
     required: false
     description: "Whether to upload the generated documentation files as a build artifact."
     default: "false"
+  install-dir:
+    required: false
+    description: "Set to a non-empty value to copy the binaries to this location"
 runs:
   using: "composite"
   steps:
@@ -48,9 +51,11 @@ runs:
     - name: Build
       shell: bash
       working-directory: ${{ inputs.project-directory }}
+      env:
+        INSTALL_OPTS: ${{ (inputs.install-dir && format('--copy-bins --local-bin-path={0}', inputs.install-dir)) || '' }}
       run: |
         stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal build --fast \
-          --test --no-run-tests \
+          --test --no-run-tests $INSTALL_OPTS \
           --haddock --haddock-arguments='-odocs'
 
     - name: Upload documentation
