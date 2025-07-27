@@ -34,10 +34,10 @@ runs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.install-haskell.outputs.stack-root }}
-        key: ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}/{1}.yaml', inputs.project-directory, inputs.resolver)) }}-${{ hashFiles(format('{0}/*.cabal', inputs.project-directory)) }}
+        key: ${{ runner.arch }}-${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}/{1}.yaml', inputs.project-directory, inputs.resolver)) }}-${{ hashFiles(format('{0}/*.cabal', inputs.project-directory)) }}
         restore-keys: |
-          ${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}/{1}.yaml', inputs.project-directory, inputs.resolver)) }}-
-          ${{ runner.os }}-${{ inputs.resolver }}-
+          ${{ runner.arch }}-${{ runner.os }}-${{ inputs.resolver }}-${{ hashFiles(format('{0}/{1}.yaml', inputs.project-directory, inputs.resolver)) }}-
+          ${{ runner.arch }}-${{ runner.os }}-${{ inputs.resolver }}-
 
     - name: Install dependencies
       shell: bash

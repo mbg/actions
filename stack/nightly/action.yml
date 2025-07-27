@@ -40,9 +40,9 @@ runs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.install-haskell.outputs.stack-root }}
-        key: stack-nightly-${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml', inputs.project-directory)) }}-${{ hashFiles(format('{0}/*.cabal', inputs.project-directory)) }}
+        key: stack-nightly-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml', inputs.project-directory)) }}-${{ hashFiles(format('{0}/*.cabal', inputs.project-directory)) }}
         restore-keys: |
-          stack-nightly-${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml', inputs.project-directory)) }}-
+          stack-nightly-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml', inputs.project-directory)) }}-
 
     - name: Build and test with the nightly snapshot
       shell: bash
