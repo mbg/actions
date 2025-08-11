@@ -18,6 +18,10 @@ inputs:
     required: false
     description: "Whether to upload the generated documentation files as a build artifact."
     default: "false"
+  list-dependencies:
+    required: false
+    description: "Whether to list the exact dependency versions used."
+    default: "true"
   install-dir:
     required: false
     description: "Set to a non-empty value to copy the binaries to this location"
@@ -47,6 +51,13 @@ runs:
       working-directory: ${{ inputs.project-directory }}
       run: |
         stack --stack-yaml=${{ inputs.resolver }}.yaml --no-terminal build --test --haddock --only-dependencies --fast
+
+    - name: "List dependency information"
+      if: inputs.list-dependencies == 'true'
+      shell: bash
+      working-directory: ${{ inputs.project-directory }}
+      run: |
+        stack --stack-yaml=${{ inputs.resolver }}.yaml ls dependencies
 
     - name: Build
       shell: bash
