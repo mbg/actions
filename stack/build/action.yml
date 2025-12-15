@@ -71,7 +71,7 @@ runs:
 
     - name: Upload documentation
       if: inputs.upload-docs == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: docs-${{ inputs.resolver }}
         path: ${{ inputs.project-directory }}/docs/
