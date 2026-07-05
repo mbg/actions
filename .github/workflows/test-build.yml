@@ -17,6 +17,9 @@ jobs:
     name: "Test workflow"
     runs-on: "ubuntu-latest"
 
+    permissions:
+      contents: read
+
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
