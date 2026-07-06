@@ -37,7 +37,7 @@ runs:
 
     - name: Cache .stack folder
       id: cache-stack
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: ${{ steps.install-haskell.outputs.stack-root }}
         key: stack-nightly-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml', inputs.project-directory)) }}-${{ hashFiles(format('{0}/*.cabal', inputs.project-directory)) }}
